@@ -9,20 +9,24 @@ namespace GiteMontagne
 {
     class DAL
     {
-        public static string sqlConnexion = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\GiteMontagne_v13\GiteMontagne\LogicielResa.mdf;Integrated Security=True";
-        public static void EnregistrerClient( string nom, int telephone, string adresse, int cp, string ville , int nombrePersonnes, DateTime dateArrivee, int duree, DateTime dateDepart)
+        public static string sqlConnexion = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=G:\Projects\Personnal\giteMontagneWpf\GiteMontagne\LogicielResa.mdf;Integrated Security=True";
+        private static void RunQuery(string query)
         {
             Client client = new Client();
-            string sqlQuery = $"INSERT INTO Reservations (DateArrivee, Duree, DateDepart) VALUES ('{dateArrivee.ToString("MM/dd/yyyy")}',{duree}, DATEADD(DD,{duree},'{dateDepart.ToString("MM/dd/yyyy")}') as MaDate = '{dateArrivee.AddDays(duree).ToString("MM/dd/yyyy")}'" +
-                $"INSERT INTO Clients (Nom, Telephone, NombrePersonnes) VALUES ('{nom}', {telephone}, {nombrePersonnes})" +
-                //$"INSERT INTO Reserver (Disponibilite) VALUES ('{False}')" +
-            $"INSERT INTO Adresses (Adresse, CP, Ville) VALUES ('{adresse}', {cp}, '{ville}')";
+            string sqlQuery = query;
 
             SqlConnection connection = new SqlConnection(sqlConnexion);
             connection.Open();
             SqlCommand command = new SqlCommand(sqlQuery, connection);
 
             command.ExecuteNonQuery();
+        }
+        public static void EnregistrerClient( string nom, int telephone, string adresse, int cp, string ville , int nombrePersonnes, DateTime dateArrivee, int duree, DateTime dateDepart)
+        {
+            RunQuery($"INSERT INTO Reservations (DateArrivee, Duree, DateDepart) VALUES ('{dateArrivee.ToString("MM/dd/yyyy")}',{duree}, DATEADD(DD,{duree},'{dateDepart.ToString("MM/dd/yyyy")}')");
+            RunQuery($"INSERT INTO Clients (Nom, Telephone, NombrePersonnes) VALUES ('{nom}', {telephone}, {nombrePersonnes})");
+            RunQuery($"INSERT INTO Adresses (Adresse, CP, Ville) VALUES ('{adresse}', {cp}, '{ville}')");
+
         }
 
         public static void SupprimerClient(int unId)
